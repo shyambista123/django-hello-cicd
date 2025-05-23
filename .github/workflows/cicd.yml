@@ -21,9 +21,9 @@ jobs:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
         run: |
-          sshpass -p "$SSH_PASSWORD" ssh -v -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "
+          sshpass -p "$SSH_PASSWORD" ssh -v -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST /bin/bash -c "'
             cd /home/$SSH_USER/django-hello-cicd &&
             git reset --hard origin/main &&
             git pull origin main &&
             docker compose up -d --build
-          "
+          '"
