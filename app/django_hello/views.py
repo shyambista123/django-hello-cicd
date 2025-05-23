@@ -56,7 +56,6 @@ def index(request):
         <div class="container">
             <h1>Welcome to Django CI/CD!</h1>
             <p>Hello, world! This is a styled Django page deployed via CI/CD. Your pipeline is working perfectly!</p>
-            <a href="#" class="button">Test Button</a>
         </div>
     </body>
     </html>
