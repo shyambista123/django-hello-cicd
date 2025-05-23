@@ -12,13 +12,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install sshpass
-        run: sudo apt-get update && sudo apt-get install -y sshpass
+      - name: Test SSH connection
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            echo "SSH connection successful"
+            ls -la /home/${{ secrets.SSH_USER }}/django-hello-cicd
 
       - name: Deploy to VM
-        env:
-          SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
-        run: |
-          sshpass -p "$SSH_PASSWORD" ssh -v -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST /bin/bash -c "cd /home/$SSH_USER/django-hello-cicd && git reset --hard origin/main && git pull origin main && docker compose up -d --build"
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            cd /home/${{ secrets.SSH_USER }}/django-hello-cicd
+            docker compose down
+            git reset --hard origin/main
+            git pull origin/main
+            docker compose up -d --build
