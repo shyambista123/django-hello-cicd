@@ -12,6 +12,28 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Debug secrets
+        env:
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+        run: |
+          echo "SSH_USER: $SSH_USER"
+          echo "SSH_HOST: $SSH_HOST"
+          echo "SSH_PASSWORD: [redacted]"
+          if [ -z "$SSH_HOST" ]; then
+            echo "Error: SSH_HOST is unset"
+            exit 1
+          fi
+          if [ -z "$SSH_USER" ]; then
+            echo "Error: SSH_USER is unset"
+            exit 1
+          fi
+          if [ -z "$SSH_PASSWORD" ]; then
+            echo "Error: SSH_PASSWORD is unset"
+            exit 1
+          fi
+
       - name: Test SSH connection
         uses: appleboy/ssh-action@master
         with:
@@ -30,7 +52,6 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd /home/${{ secrets.SSH_USER }}/django-hello-cicd
-            docker compose down
             git reset --hard origin/main
             git pull origin/main
             docker compose up -d --build
