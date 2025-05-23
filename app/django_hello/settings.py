@@ -28,9 +28,9 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
+CSRF_TRUSTED_ORIGINS = ['*', 'https://cicd.infinitebitworks.xyz', 'http://cicd.infinitebitworks.xyz']
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
